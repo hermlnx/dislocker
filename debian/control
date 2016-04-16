@@ -1,0 +1,20 @@
+Source: dislocker
+Section: admin
+Priority: optional
+Maintainer: hermlnx <hbeval1@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), cmake (>= 2.6.0), make, libfuse-dev (>= 2.6.0), libpolarssl-dev, ruby-dev (>= 1.9.0)
+Standards-Version: 3.9.4
+Homepage: http://www.hsc.fr/ressources/outils/dislocker/
+#Vcs-Git: git://git.debian.org/collab-maint/dislocker.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/dislocker.git;a=summary
+
+Package: dislocker
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Read BitLocker encrypted volumes under Linux
+ This software has been designed to read BitLocker encrypted partitions under a Linux system.
+ The driver used to only read volumes encrypted under a Windows 7 system but see now its capabilities extended to:
+ * Windows Vista, 7, 8, 8.1 and 10 encrypted partitions;
+ * BitLocker-To-Go encrypted partitions - that's USB/FAT32 partitions;
+ * be able to write on the above partitions.
+
