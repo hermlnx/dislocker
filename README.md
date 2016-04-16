@@ -6,7 +6,7 @@
 This software has been designed to read BitLocker encrypted partitions under a
 Linux system. The driver used to only read volumes encrypted under a Windows 7
 system but see now its capabilities extended to:
- - Windows Vista, 7 and 8 encrypted partitions;
+ - Windows Vista, 7, 8, 8.1 and 10 encrypted partitions;
  - BitLocker-To-Go encrypted partitions - that's USB/FAT32 partitions;
  - be able to write on the above partitions.
 
@@ -78,6 +78,7 @@ whether the volume is a standard BitLocker partition or a BitLocker-To-Go one.
 
 Five binaries are built when compiling dislocker as described in the `INSTALL.md`
 file:
+
 1. `dislocker-bek`: for disecting a .bek file and printing information about it
 
 2. `dislocker-metadata`: for printing information about a BitLocker-encrypted volume

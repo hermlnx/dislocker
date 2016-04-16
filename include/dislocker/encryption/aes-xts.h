@@ -20,60 +20,32 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  */
-#ifndef DECRYPT_H
-#define DECRYPT_H
+#ifndef DIS_AES_XTS_H
+#define DIS_AES_XTS_H
 
-
-#define AUTHENTICATOR_LENGTH 16
-
-
-#include <sys/types.h>
-#include "dislocker/xstd/xstdio.h" // Only for off_t
-#include "dislocker/encryption/encommon.h"
-
-
+#include "dislocker/ssl_bindings.h"
 
 
 /*
  * Prototypes
  */
-int decrypt_key(
-	unsigned char* input,
-	unsigned int   input_size,
-	unsigned char* mac,
-	unsigned char* nonce,
-	unsigned char* key,
-	unsigned int   keybits,
-	void** output
+int dis_aes_crypt_xex(
+	AES_CONTEXT *crypt_ctx,
+	AES_CONTEXT *tweak_ctx,
+	int mode,
+	size_t length,
+	unsigned char *iv,
+	const unsigned char *input,
+	unsigned char *output
+);
+int dis_aes_crypt_xts(
+	AES_CONTEXT *crypt_ctx,
+	AES_CONTEXT *tweak_ctx,
+	int mode,
+	size_t length,
+	unsigned char *iv,
+	const unsigned char *input,
+	unsigned char *output
 );
 
-void decrypt_cbc_without_diffuser(
-	dis_aes_contexts_t* ctx,
-	uint16_t sector_size,
-	uint8_t* sector,
-	off_t sector_address,
-	uint8_t* buffer
-);
-
-void decrypt_cbc_with_diffuser(
-	dis_aes_contexts_t* ctx,
-	uint16_t sector_size,
-	uint8_t* sector,
-	off_t sector_address,
-	uint8_t* buffer
-);
-
-void decrypt_xts(
-	dis_aes_contexts_t* ctx,
-	uint16_t sector_size,
-	uint8_t* sector,
-	off_t sector_address,
-	uint8_t* buffer
-);
-
-int decrypt_sector(dis_crypt_t crypt, uint8_t* sector, off_t sector_address, uint8_t* buffer);
-
-
-
-#endif /* DECRYPT_H */
-
+#endif /* DIS_AES_XTS_H */

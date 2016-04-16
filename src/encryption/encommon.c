@@ -52,6 +52,11 @@ dis_crypt_t dis_crypt_new(uint16_t sector_size, cipher_t disk_cipher)
 		crypt->encrypt_fn = encrypt_cbc_with_diffuser;
 		crypt->decrypt_fn = decrypt_cbc_with_diffuser;
 	}
+	else if(disk_cipher == AES_XTS_128 || disk_cipher == AES_XTS_256)
+	{
+		crypt->encrypt_fn = encrypt_xts;
+		crypt->decrypt_fn = decrypt_xts;
+	}
 	else
 	{
 		crypt->encrypt_fn = encrypt_cbc_without_diffuser;
@@ -84,6 +89,20 @@ int dis_crypt_set_fvekey(dis_crypt_t crypt, uint16_t algorithm, uint8_t* fvekey)
 		case AES_256_NO_DIFFUSER:
 			AES_SETENC_KEY(&crypt->ctx.FVEK_E_ctx, fvekey, 256);
 			AES_SETDEC_KEY(&crypt->ctx.FVEK_D_ctx, fvekey, 256);
+			return DIS_RET_SUCCESS;
+
+		case AES_XTS_128:
+			AES_SETENC_KEY(&crypt->ctx.FVEK_E_ctx, fvekey, 128);
+			AES_SETDEC_KEY(&crypt->ctx.FVEK_D_ctx, fvekey, 128);
+			AES_SETENC_KEY(&crypt->ctx.TWEAK_E_ctx, fvekey + 0x10, 128);
+			AES_SETDEC_KEY(&crypt->ctx.TWEAK_D_ctx, fvekey + 0x10, 128);
+			return DIS_RET_SUCCESS;
+
+		case AES_XTS_256:
+			AES_SETENC_KEY(&crypt->ctx.FVEK_E_ctx, fvekey, 256);
+			AES_SETDEC_KEY(&crypt->ctx.FVEK_D_ctx, fvekey, 256);
+			AES_SETENC_KEY(&crypt->ctx.TWEAK_E_ctx, fvekey + 0x20, 256);
+			AES_SETDEC_KEY(&crypt->ctx.TWEAK_D_ctx, fvekey + 0x20, 256);
 			return DIS_RET_SUCCESS;
 
 		default:
