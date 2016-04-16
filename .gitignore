@@ -1,32 +1,32 @@
-# Object files
 *.o
-*.ko
-*.obj
-*.elf
+*.kate-swp
+#*~
+*.swp
+*.gz
+src/dislocker
+src/dislocker-bek
+src/dislocker-file
+src/dislocker-find
+src/dislocker-fuse
+src/dislocker-metadata
+src/libdislocker.so
+src/libdislocker.so.0.4
+src/libdislocker.so.0.4.1
 
-# Precompiled Headers
-*.gch
-*.pch
+# Configured files
+include/dislocker/ssl_bindings.h
+src/dislocker-find.rb
 
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
+# Unit test files
+*.gcno
+*.gcda
+*.gcov
 
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
+# cmake files
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+cmake_uninstall.cmake
+install_manifest.txt
 
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-
-# Debug files
-*.dSYM/

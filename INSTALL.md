@@ -1,99 +1,170 @@
-INTRODUCTION
-`------------
+# INTRODUCTION
 
 This file describes how to install dislocker onto your machine.
 
-
-
-REQUIREMENTS
-`------------
+# REQUIREMENTS
 
 You need:
- - Package libfuse-dev (debian), fuse-devel (fedora) or osxfuse (OSX), if you
-   want to use FUSE;
- - A partition encrypted with BitLocker, from Windows Vista or 7.
 
-Of course, you need a compiler (tested against gcc 4.6 and darwin 10-4.2.1).
-
-Note that the code expects FUSE 2.6, when using the decryption with FUSE.
-
-
-
-INSTALLING
-`----------
-
-First thing to do is to cd into the src/ directory. Then...
-
-As you may know, the driver can be used in two ways: using FUSE or not. By
-default, typing `make` will generate a FUSE capable binary. However, running
-`make file` won't include FUSE capabilities. In this latter mode, dislocker
-will decrypt your BitLocker volume into a file, so make sure you have enough
-space left on your partition. The file will be a NTFS partition then.
-Thus, make your choice of the use you'll have.
-
-Type: `make` or `make file` according to your needs, then `sudo make install`
-(or just the last one if you're lazy, but I don't recommend that). Note that the
-`-Werror' flag on the `WFLAGS' line in the Makefile may break the compilation,
-so you can remove it, but it is as your own risks.
-
-The binary will be installed into `/usr/bin/' by default, edit the INSTALL_PATH
-variable (into the Makefile) to change that before the `make install` command.
-
-Once installed, see dislocker(1) for details on how to use it.
+- Compiler, gcc or clang;
+- cmake (at least version 2.6);
+- make (or gmake, for FreeBSD);
+- Headers for FUSE;
+- Headers for PolarSSL/mbedTLS;
+- A partition encrypted with BitLocker, from Windows Vista, 7 or 8.
 
 
+If you have Ruby headers, the library will compile with some Ruby bindings and
+another program - see the NOTE section below - will be available.
 
-UNINSTALLING
-`------------
+For Debian-like:
+
+- aptitude install gcc cmake make libfuse-dev libpolarssl-dev ruby-dev
+
+For Fedora-like:
+
+- dnf install gcc cmake make fuse-devel mbedtls-devel ruby-devel rubypick
+
+Alternatively, running "dnf install dislocker fuse-dislocker" to use the
+already existing RPM packages in Fedora could be a clever idea.
+
+For RHEL-like (including CentOS Scientific Linux):
+
+- yum install gcc cmake make fuse-devel mbedtls-devel ruby-devel /usr/bin/ruby
+
+Alternatively, running "yum install dislocker fuse-dislocker" to use the
+already existing RPM packages in EPEL could be a clever idea.
+
+For FreeBSD:
+
+- pkg install cmake gmake fusefs-libs polarssl
+
+For OSX: Follow the instructions in the next section.
+
+Note that the code expects at least FUSE 2.6.
+
+# INSTALLING
+
+Each OS type has its own section below, beware to follow yours:
+
+## If you are on MacOSX...
+
+Just install Homebrew (http://brew.sh/) and run the following command:
+```
+brew update
+brew install src/dislocker.rb
+```
+This will install dislocker.
+
+You may have to follow the 'mbedTLS 2.0.0' section below. If so, you will have
+to install OSXfuse and cmake through Homebrew first:
+```
+brew install osxfuse cmake
+```
+And once you have followed the 'mbedTLS 2.0.0' section's instructions, you can
+follow the steps below, in the 'If you are NOT on MacOSX...' point (even if you
+are on MacOSX).
+
+## If you're on FreeBSD...
+
+Follow the instructions below (next subsection) by replacing 'make' with 'gmake'.
+
+## If you are NOT on MacOSX...
+
+If you already have installed the dependencies (see REQUIREMENTS section above),
+you have to type the following commands to install the binaries on your system:
+```
+cmake .
+make
+sudo make install
+```
+Don't forget the dot (.) on the cmake command-line. If you only want to generate
+the binaries, without installing them, you can skip the last command (the one
+beginning with sudo).
+
+Note that the '-Werror' flag in the cmake WARN_FLAGS variable may break the
+compilation for useless warnings. If you know what you're doing, you can remove
+it by running the following cmake command instead of the one above:
+```
+cmake -D WARN_FLAGS:STRING="-Wall -Wextra" .
+```
+
+See the [cmake documentation](http://www.cmake.org/documentation/) if you want
+to customize the build.
+
+Once installed, see `dislocker(1)` for details on how to use it.
+
+# UNINSTALLING
 
 I'm sure you don't want to do that. But if you're really forced by someone, just
-type `make uninstall`.
+type `make uninstall` as super-user.
+
+# mbedTLS 2.0.0
+
+Since the version 2.0.0 of mbedTLS, the build moves "crypto" functions such
+as AES and SHA256 into a separate, libmbedcrypto, library. However, a typo
+didn't installed this library, resulting in some packagers not providing this
+library, thus breaking the dislocker compilation.
+If you have this problem, it's recommended to run the following commands (they
+have been put in the src/mbed_install.sh script, if you don't want to
+copy/paste from here):
+```
+git clone https://github.com/ARMmbed/mbedtls.git
+cd mbedtls
+git checkout mbedtls-2.0.0
+```
+Then apply the patch given by the following command:
+```
+git show 6f42417b library/CMakeLists.txt
+```
+And compile/install the library:
+```
+cmake .
+make
+sudo make install
+```
+
+You can then resume the installation where you have left it.
+
+# PORTABILITY
+
+Globally, this was successfuly tested on Linux x86/x86_64, MacOSX and FreeBSD.
+It won't work on Windows and may not work on other BSDs (not tested).
+
+For MacOSX, it has been tested against OSXFUSE 2.3.8 and 2.3.9.
+
+Cases where you need to remove the '-Werror' from the WARN_FLAGS variable:
+
+- You're on Ubuntu 10.04;
+- You're using GCC with a version older than 4.3.
 
 
+Whether it works or not, feel free to send comments and feedbacks to
+[dislocker __AT__ hsc __DOT__ fr]().
 
-PORTABILITY
-`-----------
+# NOTE
 
-Globally, this was successfuly tested on Linux x86/x86_64. It won't work on
-Windows and may not work on *BSD (never tested).
+Five binaries are built when compiling dislocker as described in the `INSTALL.md`
+file:
+1. `dislocker-bek`: for disecting a .bek file and printing information about it
 
-Precisely, the table below indicates distrib, version and arch:
+2. `dislocker-metadata`: for printing information about a BitLocker-encrypted volume
 
-+----------------------------------------------------+
-| distrib/OS  | version |  arch  | Vista(v)/Seven(s) |
-|-------------+---------+--------+-------------------|
-| Fedora      |   14    | x86_64 |         s         |
-| Fedora      |   15    | x86    |        vs         |
-| Fedora      |   15    | x86_64 |        vs         |
-| Fedora      |   16    | x86    |        vs         |
-| Fedora      |   16    | x86_64 |        vs         |
-| Ubuntu      |  11.04  | x86    |         s         |
-| MacOSX      | 10.6.8  | i386   |        vs         |
-+----------------------------------------------------+
+3. `dislocker-find`: not a binary but a Ruby script which tries to find BitLocker
+  encrypted partition among the plugged-in disks (only work if the library is
+  compiled with the Ruby bindings)
 
-Note: For MacOSX, it has been tested against OSXFUSE 2.3.8 and 2.3.9.
+4. `dislocker-file`: for decrypting a BitLocker encrypted partition into a flat file
+formatted as an NTFS partition you can mount
 
-If your distrib/OS isn't in that table, this doesn't imply that the driver
-doesn't work for you. Test it and send me feedbacks, whether it works or not.
+5. `dislocker-fuse`: the one you're using when calling `dislocker',
+which dynamically decrypts a BitLocker encrypted partition using FUSE
 
-In any case, feel free to send comments and feedbacks to
-<dislocker __AT__ hsc __DOT__ fr>.
-
-Thanks goes to Rogier Wolff for testing.
+You can build each one independently providing it as the makefile target. For
+instance, if you want to compile dislocker-fuse only, you'd simply run:
+```bash
+$ cmake .
+$ make dislocker-fuse
+```
 
 
-
-NOTE
-`----
-
-In many directories included into the sources, there's a Makefile with rules to
-build a standalone binary. To build these standalone binaries, cd to the
-directory and type `make`, thus creating a binary which you can use to do some
-process separately.
-
-Binary capable directories:
-- accesses/bek/: read a .bek file and display information about it;
-- accesses/rp/: calculate the intermediate key for a given recovery password;
-- encryption/: test encryption/decryption on a test case;
-- metadata/: read a BitLocker volume and display information about its metadata;
-- outputs/fuse/: FUSE's hello world example.
