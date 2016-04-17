@@ -2,7 +2,7 @@
 # -*- makefile -*-
 
 # Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+export DH_VERBOSE=1
 
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
@@ -10,3 +10,10 @@ export DH_OPTIONS
 
 %:
 	dh $@ 
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -f include/dislocker/ssl_bindings.h
+	rm -f src/dislocker-find.rb
+	rm -f man/linux/*.1.gz
+
