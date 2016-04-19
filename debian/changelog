@@ -1,5 +1,5 @@
-dislocker (0.6.1-1) trusty; urgency=low
+dislocker (0.6.1-1xenial1) xenial; urgency=low
 
-  * Initial release 
+  * Initial release
 
- -- hermlnx <hbeval1@gmail.com>  Sat, 16 Apr 2016 18:04:26 -0400
+ -- hermlnx <hbeval1@gmail.com>  Mon, 18 Apr 2016 18:04:26 -0400

@@ -3,7 +3,7 @@ Section: admin
 Priority: optional
 Maintainer: hermlnx <hbeval1@gmail.com>
 Build-Depends: debhelper (>= 8.0.0), cmake (>= 2.6.0), make (>= 3.8.0), libfuse-dev (>= 2.6.0), libpolarssl-dev, ruby-dev (>= 1.9.0)
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Homepage: http://www.hsc.fr/ressources/outils/dislocker/
 #Vcs-Git: git://git.debian.org/collab-maint/dislocker.git
 #Vcs-Browser: http://git.debian.org/?p=collab-maint/dislocker.git;a=summary
